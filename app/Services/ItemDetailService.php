@@ -29,9 +29,6 @@ class ItemDetailService{
         $sales = $this->item_detail_repository->loadItemDetail();
         $current_date = Carbon::now()->toDateString();
 
-        
-
-
         $miners = [];
         $daily = [];
         $datastorage = [];
@@ -158,6 +155,7 @@ class ItemDetailService{
         }
 
         $datastorage = [];
+        $items = [];
         if(!empty($miners)){
             $miners = array_values(array_unique($miners));
             foreach($miners as $miner){
@@ -165,15 +163,19 @@ class ItemDetailService{
                 $quantity = 0;
                 foreach($results as $result){
                     if($miner === $result['miner_username']){
-                    $price += $result['price'];
-                    $quantity += 1;
+                        $price += $result['price'];
+                        $quantity++;
+                        $items[] = $result['item_codes'];
                     }
                 }
                 $datastorage[] = [
                     "miner_username" => $miner,
                     "price" => $price,
-                    "quantity" => $quantity
+                    "quantity" => $quantity,
+                    "item_codes" => $items
                 ];
+                $items = [];
+                
             }
         }
 

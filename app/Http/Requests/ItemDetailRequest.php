@@ -34,6 +34,7 @@ class ItemDetailRequest extends FormRequest
             "miner_username" => "required",
             "size" => "required",
             "price" => "required",
+            "item_codes" => "required"
         ];
     }
 
@@ -43,7 +44,8 @@ class ItemDetailRequest extends FormRequest
             "process_id.required" => $this->method() === "PATCH" ? "Item Status is required": "",
             "miner_username.required" => "Miner username is required",
             "size.required" => "Size is required",
-            "price" => "Price is required"
+            "price.required" => "Price is required",
+            "item_codes.required" => "Item Code is required."
         ];
     }
 

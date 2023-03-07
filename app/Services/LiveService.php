@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 use App\Repositories\LiveRepository;
+use Carbon\Carbon;
 
 class LiveService{
     public $live_repository;
@@ -12,6 +13,16 @@ class LiveService{
         return $this->live_repository->storeLive($data);
     }
     public function loadLive(){
-        return $this->live_repository->loadLive();
+        $results = $this->live_repository->loadLive();
+        $datastorage = [];
+        foreach($results as $result){
+            $datastorage[] = [
+                "id" => $result['id'],
+                "item_code" => $result['item_code'],
+                "created_at" => Carbon::parse($result['created_at'])->toDateString()
+            ];
+        }
+
+        return $datastorage;
     }
 }

@@ -53,7 +53,8 @@ class ItemDetailController extends Controller
                 "process_id" => 1,
                 "miner_username" => $item_detail_request["miner_username"],
                 "price" => $item_detail_request['price'],
-                "size" => $item_detail_request['size']
+                "size" => $item_detail_request['size'],
+                "item_codes" => $item_detail_request['item_codes']
             ];
             $this->item_detail_service->storeItemDetail($data);
             if(count($res) === 0 ){
@@ -83,7 +84,8 @@ class ItemDetailController extends Controller
                 "process_id" => $item_detail_request["process_id"],
                 "miner_username" => $item_detail_request["miner_username"],
                 "price" => $item_detail_request['price'],
-                "size" => $item_detail_request['size']
+                "size" => $item_detail_request['size'],
+                "item_codes" => $item_detail_request['item_codes']
             ];
             $this->item_detail_service->updateItemDetail($id, $data);
         } catch (\Exception $e) {

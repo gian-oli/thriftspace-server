@@ -15,6 +15,7 @@ class ItemDetail extends Model
         'size',
         'live_id',
         'process_id',
+        'item_codes'
     ];
 
     protected $guarded = ['id'];
