@@ -18,44 +18,63 @@ class ItemDetailService{
     }
 
     public function loadItemDetail(){
-        return $this->item_detail_repository->loadItemDetail();
+        $results = $this->item_detail_repository->loadItemDetail();
+
+        $datastorage = [];
+        foreach($results as $result){
+            $datastorage[] =[
+                "id" => $result['id'],
+                "miner_username" => $result['miner_username'],
+                "price" => $result['price'],
+                "size" => $result['size'],
+                "created_at" => Carbon::parse($result['created_at'])->toTimeString(), 
+                "live_id" => $result['live']['id'],
+                "item_code" => $result['live']['item_code'],
+                "live_created_at" => Carbon::parse($result['live']['created_at'])->toDateString(),
+                "process_id" => $result['process']['id'],
+                "process" => $result['process']['process_name']
+            ];
+        }
+
+        return $datastorage;
     }
 
     public function updateItemDetail($id, $data){
         return $this->item_detail_repository->updateItemDetail($id, $data);
     }
 
-    public function loadSalesToday(){
-        $sales = $this->item_detail_repository->loadItemDetail();
+    public function loadSalesToday($process){
+        $sales = $this->item_detail_repository->loadSalesToday();
         $current_date = Carbon::now()->toDateString();
 
         $miners = [];
         $daily = [];
         $datastorage = [];
         $total_price = 0;
+        $x = 0;
         foreach($sales as $sale){
-            if($current_date === Carbon::parse($sale['created_at'])->toDateString()){
+            if($current_date === Carbon::parse($sale['created_at'])->toDateString() && $process == $sale["process_id"]){
                 $total_price += $sale['price'];
-                // $daily[] = [
-                //     "miner_username" => $sale['miner_username'],
-                //     "price" => $sale['price']
-                // ];
                 $miners[] = $sale['miner_username'];
             }
+            $x++;
         }
 
         if(!empty($miners)){
             $miners = array_values(array_unique($miners));
             foreach($miners as $miner){
                 $price = 0;
+                $quantity = 0;
                 foreach($sales as $sale){
                     if($miner === $sale['miner_username']){
                         $price += $sale['price'];
+                        $quantity++;
                     }
                 }
                 $daily[] = [
                     "miner_username" => $miner,
-                    "price" => $price
+                    "price" => $price,
+                    "quantity" => $quantity
                 ];
             }
         }
@@ -68,7 +87,7 @@ class ItemDetailService{
         return $datastorage;
     }
 
-    public function loadSalesMonthly($date){
+    public function loadSalesMonthly($date, $process){
         $real_date = strtotime($date);
         $month = date('Y-m', $real_date);
         $end = date(Carbon::parse($month)->endOfMonth()->toDateString());
@@ -85,14 +104,15 @@ class ItemDetailService{
         foreach($monthly_records as $monthly_record){
             $daily[] = Carbon::parse($monthly_record['created_at'])->toDateString();
         }
-
+        
         $temp = [];
         if(!empty($daily)){
             $daily = array_values(array_unique($daily));
             foreach($daily as $res){
+                $x = 0;
                 $price = 0;
                 foreach($monthly_records as $monthly_record){
-                    if($res === Carbon::parse($monthly_record['created_at'])->toDateString()){
+                    if($res === Carbon::parse($monthly_record['created_at'])->toDateString() && $process == $monthly_record['process_id']){
                         $price += $monthly_record['price'];
                     }
                 }
@@ -101,13 +121,13 @@ class ItemDetailService{
                     "price" => $price,
                     "created_at" => $res,
                 ];
+                $x++;
             }
             $total_price = 0; 
             foreach($temp as $data){
                 $total_price += $data['price'];
             }
         }
-
 
         $datastorage = [
             "monthly_record" => $temp,
@@ -143,7 +163,7 @@ class ItemDetailService{
             }
         }
         
-        return $datastorage;
+        return $daily;
     }
 
     public function thisLiveTopMiners($live_id){

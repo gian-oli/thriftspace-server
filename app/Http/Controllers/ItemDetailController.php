@@ -94,35 +94,26 @@ class ItemDetailController extends Controller
         return $result;
     }
 
-    public function loadSalesToday(){
+    public function loadSalesToday($process){
         $result = $this->successResponse("Load Successfully."); 
         try{
-           $result['data'] = $this->item_detail_service->loadSalesToday();
+           $result['data'] = $this->item_detail_service->loadSalesToday($process);
         } catch (\Exception $e) {
             $result = $this->errorResponse($e);
         }
         return $result;
     }
     
-    public function loadSalesMonthly($date){
+    public function loadSalesMonthly($date, $id){
         $result = $this->successResponse("Load Successfully."); 
         try{
-           $result['data'] = $this->item_detail_service->loadSalesMonthly($date);
+           $result['data'] = $this->item_detail_service->loadSalesMonthly($date, $id);
         } catch (\Exception $e) {
             $result = $this->errorResponse($e);
         }
         return $result;
     }
 
-    // public function loadSalesByDateRange($date_from, $date_to){
-    //     $result = $this->successResponse("Load Successfully."); 
-    //     try{
-    //        $result['data'] = $this->item_detail_service->loadSalesByDateRange($date_from, $date_to);
-    //     } catch (\Exception $e) {
-    //         $result = $this->errorResponse($e);
-    //     }
-    //     return $result;
-    // }
     public function loadSalesByDateRange(DateRangeRequest $date_range_request){
         $result = $this->successResponse("Load Successfully."); 
         try{

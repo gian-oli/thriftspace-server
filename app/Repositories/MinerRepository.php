@@ -12,7 +12,7 @@ class MinerRepository{
         return $this->miner_model->create($data);
     }
     public function loadMiner(){
-        return $this->miner_model->all();
+        return $this->miner_model->orderBy('id')->lazy()->all();
     }
     public function updateMiner($id, $data){
         return $this->miner_model->findOrFail($id)->update($data);

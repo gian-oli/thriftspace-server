@@ -12,13 +12,17 @@ class ItemDetaiLRepository{
         return $this->item_detail_model->create($data);
     }
     public function loadItemDetail(){
-        return $this->item_detail_model->all();
+        return $this->item_detail_model->with('live','process')->orderBy('id')->get();
+    }
+    public function loadSalesToday(){
+        return $this->item_detail_model->with('process')->get();
     }
     public function updateItemDetail($id, $data){
         return $this->item_detail_model->findOrFail($id)->update($data);
     }
     public function loadSalesByDateRange($data){
         return $this->item_detail_model
+        ->with('process')
         ->whereBetween('created_at', ["{$data['date_from']} 00:00:00", "{$data['date_to']} 24:00:00"])
         ->get();
     }

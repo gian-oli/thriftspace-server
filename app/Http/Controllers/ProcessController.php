@@ -4,17 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Process;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Traits\ResponseTrait;
+use App\Services\ProcessService;
 
 class ProcessController extends Controller
 {
+    use ResponseTrait;
+    public $process_service;
+    public function __construct(ProcessService $process_service){
+        $this->process_service = $process_service;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    
+    public function loadProcess()
     {
-        //
+        $result = $this->successResponse("Load Successfully."); 
+        try{
+           $result['data'] = $this->process_service->loadProcess();
+        } catch (\Exception $e) {
+            $result = $this->errorResponse($e);
+        }
+        return $result;
     }
 
     /**
